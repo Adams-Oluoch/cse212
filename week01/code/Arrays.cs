@@ -1,3 +1,7 @@
+
+using System;
+using System.Collections.Generic;
+
 public static class Arrays
 {
     /// <summary>
@@ -12,8 +16,23 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+        
+        // Thought process
+        // Given a number n, its multiples can be found by multiplying the number with integers starting with 1
+        // thus to make a function that finds the multiples of n, we must write a function that multiplies n by intergers i from 1
+        // up to the given ending point. 
+        // 1. initialize an array of length length
+        // 2. start a for loop that iterates from i =1 to i = length
+        // 3. in the loop, multiply n by i
+        // 4. append the result to the array
+        // 5. return the resulting array 
 
-        return []; // replace this return statement with your own
+        List<double> multiples = new();
+        for (double i = 0; i < length; ++i)
+        {
+            multiples.Add(number * (i+1));
+        }
+        return multiples.ToArray(); // replace this return statement with your own
     }
 
     /// <summary>
@@ -29,5 +48,38 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        // thought process
+        // to rotate the list once, i need to create a new list in which all the indices except the ;ast one are shifted one step right. 
+        // the ;ast one must be changed to 0. 
+        // thia can be repeated as many times as the amount
+        // 1. i will do this by creating a new empty list
+        // 2. taking the last number from the old list and making ti the first number in the new list
+        // 3. adding the rest of the numbers from the old list to the new
+        // 4. replacing the old list with the new list
+
+        int i = new();
+        while (i < amount) 
+        {
+            List<int> newList = [];
+            int lastIndex = data.Count() - 1;
+            Console.WriteLine("lastIndex " + lastIndex);
+            Console.WriteLine(data[lastIndex]);
+            newList.Add(data[lastIndex]);
+
+            for (int j=0; j < lastIndex; j++)
+            {
+                newList.Add(data[j]);
+            }
+            // foreach (int number in newList)
+            // {
+            //     Console.WriteLine(number);
+            // }
+            data.Clear();
+            data.AddRange(newList);
+
+            Console.WriteLine("at 0 " + data[0]);
+            i++;
+        }
     }
 }
