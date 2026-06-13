@@ -14,8 +14,12 @@ public static class Recursion
     /// </summary>
     public static int SumSquaresRecursive(int n)
     {
-        // TODO Start Problem 1
-        return 0;
+        if (n <= 0)
+            return 0;
+        if (n == 1)
+            return 1;
+
+        return n * n + SumSquaresRecursive(n - 1);
     }
 
     /// <summary>
@@ -39,7 +43,54 @@ public static class Recursion
     /// </summary>
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
-        // TODO Start Problem 2
+        var resultsList = new List<string>();
+        HashSet<string> resultsSet = new();
+        RemoveLettersFairly(letters, letters.Length - size, resultsList);
+
+        foreach (string item in resultsList)
+        {
+            if (!resultsSet.Contains(item))
+            {
+                resultsSet.Add(item);
+                Permute(item);
+            }
+        }
+
+        void Permute(string letters, string word = "")
+        {
+            if (letters.Length == 0)
+            {
+                results.Add(word);
+            }
+            else
+            {
+                for (var i = 0; i < letters.Length; i++)
+                {
+                    var lettersLeft = letters.Remove(i, 1);
+                    Permute(lettersLeft, word + letters[i]);
+                }
+            }
+        }
+
+        static void RemoveLettersFairly(string word, int n, List<string> results)
+        {
+            if (n == 0)
+            {
+                results.Add(word);
+                return;
+            }
+
+            HashSet<string> seen = new();
+            for (int i = 0; i <= word.Length - n; i++)
+            {
+                string newWord = word.Remove(i, 1);
+                if (!seen.Contains(newWord))
+                {
+                    seen.Add(newWord);
+                    RemoveLettersFairly(newWord, n - 1, results);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -86,6 +137,9 @@ public static class Recursion
     /// </summary>
     public static decimal CountWaysToClimb(int s, Dictionary<int, decimal>? remember = null)
     {
+        if (remember == null)
+            remember = new Dictionary<int, decimal>();
+
         // Base Cases
         if (s == 0)
             return 0;
@@ -96,10 +150,11 @@ public static class Recursion
         if (s == 3)
             return 4;
 
-        // TODO Start Problem 3
+        if (remember.ContainsKey(s))
+            return remember[s];
 
-        // Solve using recursion
-        decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        decimal ways = CountWaysToClimb(s - 1, remember) + CountWaysToClimb(s - 2, remember) + CountWaysToClimb(s - 3, remember);
+        remember[s] = ways;
         return ways;
     }
 
@@ -118,7 +173,42 @@ public static class Recursion
     /// </summary>
     public static void WildcardBinary(string pattern, List<string> results)
     {
-        // TODO Start Problem 4
+        var tempResults = new List<string>
+        {
+            pattern
+        };
+
+        BinaryString(tempResults);
+
+        void BinaryString(List<string> tempResults)
+        {
+            if (tempResults.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i <= tempResults.Count - 1; i++)
+            {
+                string item = tempResults[i];
+                int index = item.IndexOf('*');
+                if (index != -1)
+                {
+                    char[] characters = item.ToCharArray();
+                    characters[index] = '0';
+                    tempResults.Add(new string(characters));
+
+                    characters[index] = '1';
+                    tempResults.Add(new string(characters));
+                }
+                else
+                {
+                    results.Add(item);
+                }
+                tempResults.Remove(item);
+            }
+
+            BinaryString(tempResults);
+        }
     }
 
     /// <summary>
@@ -135,9 +225,22 @@ public static class Recursion
         
         // currPath.Add((1,2)); // Use this syntax to add to the current path
 
-        // TODO Start Problem 5
-        // ADD CODE HERE
+        if (!maze.IsValidMove(currPath, x, y))
+            return;
 
-        // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
+        currPath.Add((x, y));
+
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(currPath.AsString());
+            currPath.RemoveAt(currPath.Count - 1);
+            return;
+        }
+
+        SolveMaze(results, maze, x + 1, y, currPath);
+        SolveMaze(results, maze, x - 1, y, currPath);
+        SolveMaze(results, maze, x, y + 1, currPath);
+        SolveMaze(results, maze, x, y - 1, currPath);
+        currPath.RemoveAt(currPath.Count - 1);
     }
 }
